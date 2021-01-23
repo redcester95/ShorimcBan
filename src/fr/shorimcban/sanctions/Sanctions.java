@@ -8,13 +8,22 @@ import java.sql.Timestamp;
 
 import fr.shorimcban.Main;
 
-public abstract class Sanctions {
+public abstract class Sanctions{
 	
-	protected abstract void Sanction(String target, String sender, String reason, String table, Timestamp time);
+	protected String table;
+	protected String untable;
+	protected String target;
 	
-	protected abstract void UnSanction(String tableIn, String tableOut, String target, String sender, String reason);
+	public Sanctions(String target) {
+		
+		this.target = target;
+	}
 	
-	protected String getStr(String table, String target, String var,Target methods) {
+	public abstract void Sanction(String sender, String reason, Timestamp time);
+	
+	public abstract void UnSanction(String sender, String reason);
+	
+	protected String getStr(String var,Target methods) {
 		
 		Connection connection = Main.getInstance().getDataBase().getConnection();
 		
@@ -43,7 +52,7 @@ public abstract class Sanctions {
 		return null;
 	}
 	
-	protected Timestamp getTs(String table, String target, String var,Target methods) {
+	protected Timestamp getTs(String var,Target methods) {
 		
 		Connection connection = Main.getInstance().getDataBase().getConnection();
 		
@@ -72,7 +81,7 @@ public abstract class Sanctions {
 		return null;
 	}
 	
-	protected boolean Boolean(String table, String target, String var, Target methods) {
+	protected boolean Boolean(String var, Target methods) {
 		
 		Connection connection = Main.getInstance().getDataBase().getConnection();
 		
@@ -97,41 +106,24 @@ public abstract class Sanctions {
 		return false;
 	}
 	
-	public String getSender(String target, String table,Target methods) {
+	public String getSender(Target methods) {
 		
-		return this.getStr(table, target, "sender", methods);
+		return this.getStr("sender", methods);
 	}
 	
-	public String getReason(String target, String table,Target methods) {
+	public String getReason(Target methods) {
 		
-		return this.getStr(table, target, "reason", methods);
+		return this.getStr("reason", methods);
 	}
 	
-	public Timestamp getDate(String table, String target, Target methods) {
+	public Timestamp getDate(Target methods) {
 		
-		return this.getTs(table, target, "date", methods);
+		return this.getTs("date", methods);
 	}
 	
-	public boolean isSanctionned(String table, String target, String var, Target methods) {
+	public boolean isSanctionned(Target methods) {
 		
-		return this.Boolean(table, target, "ip", methods);
-	}
-
-	public static enum Target{
-		
-		ip("ip"), 
-		name("target");
-		
-		private String methods = "";
-
-		private Target(String methods) {
-			this.methods  = methods;
-		}
-		
-		
-		public String toString() {
-			return methods;
-		}	
+		return this.Boolean("ip", methods);
 	}
 	
 }
